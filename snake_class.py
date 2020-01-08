@@ -15,6 +15,9 @@ def configure_label(label, value):
 		
 	elif value == 'cherry':
 		label.config(bg='red', relief='raised')
+
+	elif value == 'dead':
+		label.config(bg='purple', relief='raised')
 		
 	else:	# Snake body
 		label.config(bg='yellow', relief='groove')
@@ -41,7 +44,7 @@ class SnakeGame:
 
 		# Defaults
 		if args is None:
-			args = [6,6,3,1]
+			args = [20,20,6,2]
 
 		self.board_height = args[0]
 		self.board_width  = args[1]
@@ -52,6 +55,7 @@ class SnakeGame:
 		self.score      = 0
 		self.tail_delay = 0
 		self.game_state = 0
+		self.set_score()
 
 	# Construct the board
 	def init_board(self):
@@ -95,13 +99,13 @@ class SnakeGame:
 		
 		# Randomly generate snake head
 		self.head_i = randint(self.snake_init_length, self.board_height - self.snake_init_length - 1)
-		self.head_i = randint(self.snake_init_length, self.board_width  - self.snake_init_length - 1)
+		self.head_j = randint(self.snake_init_length, self.board_width  - self.snake_init_length - 1)
 		configure_label(self.board[self.head_i, self.head_j], 'head')
 		
 		# Build tail in random direction
 		self.last_dir = ['up', 'down', 'left', 'right'][randint(0, 3)]
 		
-		for k in range(1, snake_init_length):
+		for k in range(1, self.snake_init_length):
 
 			if self.last_dir == 'up':
 				self.tail_i = self.head_i + k
@@ -127,12 +131,12 @@ class SnakeGame:
 		while True:
 
 			# Spawn at random location not within snake
-			i = randint(1, board_height - 2)
-			j = randint(1, board_width  - 2)
+			i = randint(1, self.board_height - 2)
+			j = randint(1, self.board_width  - 2)
 
-			if self.board[i, j].value == 'e':
+			if self.board[i, j].value == 'empty':
 				configure_label(self.board[i, j], 'cherry')
-				break
+				return
 	
 	# Displace the snake by one tick
 	def move_snake(self, input_dir):
@@ -164,43 +168,44 @@ class SnakeGame:
 			tail_dir = self.board[self.tail_i, self.tail_j].value
 			configure_label(self.board[self.tail_i, self.tail_j], 'empty')
 
-			if tail_dir == 'u':
+			if tail_dir == 'up':
 				self.tail_i -= 1
-			elif tail_dir == 'd':
+			elif tail_dir == 'down':
 				self.tail_i += 1
-			elif tail_dir == 'l':
+			elif tail_dir == 'left':
 				self.tail_j -= 1
-			elif tail_dir == 'r':
+			elif tail_dir == 'right':
 				self.tail_j += 1
 
 		# Advance the head
 		configure_label(self.board[self.head_i, self.head_j], head_dir)
 
-		if head_dir == 'u':
+		if head_dir == 'up':
 			self.head_i -= 1
-		elif head_dir == 'd':
+		elif head_dir == 'down':
 			self.head_i += 1
-		elif head_dir == 'l':
+		elif head_dir == 'left':
 			self.head_j -= 1
-		elif head_dir == 'r':
+		elif head_dir == 'right':
 			self.head_j += 1
 
 		new_value = self.board[self.head_i, self.head_j].value
 		configure_label(self.board[self.head_i, self.head_j], 'head')
 
 		# Cherry capture
-		if new_value == 'c':
+		if new_value == 'cherry':
 
 			self.tail_delay += self.snake_apple_growth
 			self.score += 1
+			self.set_score()
 			self.init_cherry()
 
 		# Brutal collision
-		elif new_value != 'e':
+		elif new_value != 'empty':
 
 			self.game_state = 0
+			configure_label(self.board[self.head_i, self.head_j], 'dead')
 
-# The main attraction
-if __name__ == '__main__':
-	
-	game = SnakeGame()
+	def set_score(self):
+
+		self.score_label.config(text='Score = {:d}'.format(self.score))

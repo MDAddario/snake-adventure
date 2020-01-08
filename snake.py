@@ -16,37 +16,39 @@ lower_frame.pack()
 score_label = tk.Label(lower_frame, relief='groove')
 score_label.pack()
 
-def set_score(score):
-	score_label.config(text='Score = {:d}'.format(score))
+# Generate the game object
+game = SnakeGame([board_frame, score_label])
+direction = game.last_dir
 
 # Progress one game tick
 def update_board():
 
 	# Make sure game is active
-	if not game_state:
+	if not game.game_state:
 		return
 
 	# Schedule next game tick
 	root.after(40, update_board)
 	
 	# Move the snake
+	game.move_snake(direction)
 
 # Keyboard inputs
 def upKey(event):
 	global direction
-	direction = 'i'
+	direction = 'up'
 
 def downKey(event):
 	global direction
-	direction = 'd'
+	direction = 'down'
 	
 def leftKey(event):
 	global direction
-	direction = 'l'
+	direction = 'left'
 
 def rightKey(event):
 	global direction
-	direction = 'r'
+	direction = 'right'
 
 board_frame.bind('<Up>', upKey)
 board_frame.bind('<Down>', downKey)
@@ -57,12 +59,16 @@ board_frame.focus_set()
 # Game control system
 def start():
 
-	# Only begin a new game if current game inactive
-	if game_state:
-		return
+	'''
+	RESET GAME SOMEHOW
+	'''
 
-	game_state = 1
+	# Only begin a new game if current game inactive
+	if game.game_state:
+		return
 	
+	# Start game
+	game.game_state = 1
 	update_board()
 
 start_button = tk.Button(lower_frame, text="Start Game", relief='groove', \
