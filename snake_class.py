@@ -36,6 +36,7 @@ class SnakeGame:
 
 		self.bind_tk(board_frame, score_label)
 		self.set_params(args)
+		self.allocate_board()
 	
 	# Set everything up, ready for play
 	def start_game(self):
@@ -71,6 +72,17 @@ class SnakeGame:
 		self.tail_delay = 0
 		self.game_state = 1
 		self.set_score()
+		
+	# Allocate memory for the board
+	def allocate_board(self):
+		
+		self.board = np.empty((self.board_height, self.board_width), dtype='object') 
+		
+		# Generate all grid points
+		for i in range(self.board_height):
+			for j in range(self.board_width):
+				self.board[i, j] = tk.Label(self.board_frame, height=1, width=2)
+				self.board[i, j].grid(row=i, column=j)
 
 	# Construct the board
 	def make_board(self):
@@ -86,14 +98,6 @@ class SnakeGame:
 		'left'   : Snake body, direction left
 		'right'  : Snake body, direction right
 		'''
-
-		self.board = np.empty((self.board_height, self.board_width), dtype='object') 
-		
-		# Generate all grid points
-		for i in range(self.board_height):
-			for j in range(self.board_width):
-				self.board[i, j] = tk.Label(self.board_frame, height=1, width=2)
-				self.board[i, j].grid(row=i, column=j)
 		
 		# Empty all squares
 		for i in range(self.board_height):
