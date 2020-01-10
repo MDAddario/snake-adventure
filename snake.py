@@ -17,8 +17,26 @@ score_label = tk.Label(lower_frame, relief='groove')
 score_label.pack()
 
 # Generate the game object
-game = SnakeGame([board_frame, score_label])
-direction = game.last_dir
+game = SnakeGame(board_frame, score_label)
+
+# Keyboard inputs
+def upKey(event):
+	game.head_dir = 'up'
+
+def downKey(event):
+	game.head_dir = 'down'
+	
+def leftKey(event):
+	game.head_dir = 'left'
+
+def rightKey(event):
+	game.head_dir = 'right'
+
+board_frame.bind('<Up>', upKey)
+board_frame.bind('<Down>', downKey)
+board_frame.bind('<Left>', leftKey)
+board_frame.bind('<Right>', rightKey)
+board_frame.focus_set()
 
 # Progress one game tick
 def update_board():
@@ -31,44 +49,17 @@ def update_board():
 	root.after(40, update_board)
 	
 	# Move the snake
-	game.move_snake(direction)
-
-# Keyboard inputs
-def upKey(event):
-	global direction
-	direction = 'up'
-
-def downKey(event):
-	global direction
-	direction = 'down'
-	
-def leftKey(event):
-	global direction
-	direction = 'left'
-
-def rightKey(event):
-	global direction
-	direction = 'right'
-
-board_frame.bind('<Up>', upKey)
-board_frame.bind('<Down>', downKey)
-board_frame.bind('<Left>', leftKey)
-board_frame.bind('<Right>', rightKey)
-board_frame.focus_set()
+	game.move_snake()
 
 # Game control system
 def start():
-
-	'''
-	RESET GAME SOMEHOW
-	'''
 
 	# Only begin a new game if current game inactive
 	if game.game_state:
 		return
 	
 	# Start game
-	game.game_state = 1
+	game.start_game()
 	update_board()
 
 start_button = tk.Button(lower_frame, text="Start Game", relief='groove', \
