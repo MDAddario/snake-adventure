@@ -55,6 +55,7 @@ class SnakeGame:
 		
 		# Start game as inactive
 		self.game_state = 0
+		self.num_games = 0
 		
 	# Allocate memory for the board
 	def allocate_board(self):
@@ -70,10 +71,23 @@ class SnakeGame:
 	# Set everything up, ready for play
 	def start_game(self):
 	
-		self.reset_values()
-		self.make_board()
-		self.make_snake()
-		self.make_cherry()
+		self.num_games += 1
+	
+		# First game ever
+		if self.num_games == 1:
+	
+			self.reset_values()
+			self.make_board()
+			self.make_snake()
+			self.make_cherry()
+			
+		else:
+		
+			self.reset_values()
+			self.erase_snake()
+			self.erase_cherry()
+			self.make_snake()
+			self.make_cherry()
 		
 	# Values to start the game with
 	def reset_values(self):
@@ -146,6 +160,12 @@ class SnakeGame:
 		
 		# Set default direction
 		self.head_dir = self.last_dir
+		
+	# Clear the snake
+	def erase_snake(self):
+	
+		# Work from tail until head is found
+		
 	
 	# Spawn the cherry
 	def make_cherry(self):
@@ -153,12 +173,17 @@ class SnakeGame:
 		while True:
 
 			# Spawn at random location not within snake
-			i = randint(1, self.board_height - 2)
-			j = randint(1, self.board_width  - 2)
+			self.cherry_i = randint(1, self.board_height - 2)
+			self.cherry_j = randint(1, self.board_width  - 2)
 
-			if self.board[i, j].value == 'empty':
-				configure_label(self.board[i, j], 'cherry')
+			if self.board[self.cherry_i, self.cherry_j].value == 'empty':
+				configure_label(self.board[self.cherry_i, self.cherry_j], 'cherry')
 				break
+				
+	# Clear the cherry
+	def erase_cherry(self):
+		
+		configure_label(self.board[self.cherry_i, self.cherry_j], 'empty')
 	
 	# Displace the snake by one tick
 	def move_snake(self):
@@ -208,11 +233,11 @@ class SnakeGame:
 		elif self.head_dir == 'right':
 			self.head_j += 1
 
-		new_value = self.board[self.head_i, self.head_j].value
+		self.new_value = self.board[self.head_i, self.head_j].value
 		configure_label(self.board[self.head_i, self.head_j], 'head')
 
 		# Cherry capture
-		if new_value == 'cherry':
+		if self.new_value == 'cherry':
 
 			self.tail_delay += self.snake_apple_growth
 			self.score += 1
@@ -220,7 +245,7 @@ class SnakeGame:
 			self.make_cherry()
 
 		# Brutal collision
-		elif new_value != 'empty':
+		elif self.new_value != 'empty':
 
 			self.game_state = 0
 			configure_label(self.board[self.head_i, self.head_j], 'dead')
