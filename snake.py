@@ -38,8 +38,32 @@ board_frame.bind('<Left>', leftKey)
 board_frame.bind('<Right>', rightKey)
 board_frame.focus_set()
 
+# Progress one game tick
+def update_board():
+
+	# Make sure game is active
+	if not game.game_state:
+		return
+
+	# Schedule next game tick
+	root.after(40, update_board)
+	
+	# Move the snake
+	game.move_snake()
+
+# Game control system
+def start():
+
+	# Only begin a new game if current game inactive
+	if game.game_state:
+		return
+	
+	# Start game
+	game.start_game()
+	update_board()
+
 start_button = tk.Button(lower_frame, text="Start Game", relief='groove', \
-						command=game.start_game, bg='black', fg='white')
+						command=start, bg='black', fg='white')
 start_button.pack()
 
 root.mainloop()

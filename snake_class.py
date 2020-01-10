@@ -70,15 +70,10 @@ class SnakeGame:
 	# Set everything up, ready for play
 	def start_game(self):
 	
-		# Only begin a new game if current game inactive
-		if self.game_state:
-			return
-	
 		self.reset_values()
 		self.make_board()
 		self.make_snake()
 		self.make_cherry()
-		self.update_board()
 		
 	# Values to start the game with
 	def reset_values(self):
@@ -230,20 +225,6 @@ class SnakeGame:
 			self.game_state = 0
 			configure_label(self.board[self.head_i, self.head_j], 'dead')
 
-	# Update score label
 	def set_score(self):
 
 		self.score_label.config(text='Score = {:d}'.format(self.score))
-		
-	# Progress one game tick
-	def update_board(self):
-
-		# Make sure game is active
-		if not self.game_state:
-			return
-
-		# Schedule next game tick
-		root.after(40, update_board)
-		
-		# Move the snake
-		game.move_snake()
