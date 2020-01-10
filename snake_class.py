@@ -46,7 +46,7 @@ class SnakeGame:
 
 		# Defaults
 		if args is None:
-			args = [20,20,6,2]
+			args = [30, 60, 10, 5]
 
 		self.board_height = args[0]
 		self.board_width  = args[1]
