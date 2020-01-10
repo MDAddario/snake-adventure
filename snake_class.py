@@ -28,23 +28,12 @@ def configure_label(label, value):
 # Contains all game information
 class SnakeGame:
 
-	# By default, game inactive
-	game_state = 0
-
 	# Constructor
 	def __init__(self, board_frame, score_label, args=None):
 
 		self.bind_tk(board_frame, score_label)
 		self.set_params(args)
 		self.allocate_board()
-	
-	# Set everything up, ready for play
-	def start_game(self):
-	
-		self.reset_values()
-		self.make_board()
-		self.make_snake()
-		self.make_cherry()
 		
 	# Attach tkinter elements to object
 	def bind_tk(self, board_frame, score_label):
@@ -63,15 +52,9 @@ class SnakeGame:
 		self.board_width  = args[1]
 		self.snake_init_length  = args[2]
 		self.snake_apple_growth = args[3]
-
-	# Values to start the game with
-	def reset_values(self):
-
-		# Additional settings
-		self.score      = 0
-		self.tail_delay = 0
-		self.game_state = 1
-		self.set_score()
+		
+		# Start game as inactive
+		self.game_state = 0
 		
 	# Allocate memory for the board
 	def allocate_board(self):
@@ -83,6 +66,23 @@ class SnakeGame:
 			for j in range(self.board_width):
 				self.board[i, j] = tk.Label(self.board_frame, height=1, width=2)
 				self.board[i, j].grid(row=i, column=j)
+				
+	# Set everything up, ready for play
+	def start_game(self):
+	
+		self.reset_values()
+		self.make_board()
+		self.make_snake()
+		self.make_cherry()
+		
+	# Values to start the game with
+	def reset_values(self):
+
+		# Additional settings
+		self.score      = 0
+		self.tail_delay = 0
+		self.game_state = 1
+		self.set_score()
 
 	# Construct the board
 	def make_board(self):
